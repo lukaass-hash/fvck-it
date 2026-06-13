@@ -1,7 +1,7 @@
 {
   "name": "fvck-it-store",
-  "version": "1.0.0",
-  "description": "fvck it. — minimal two-tone clothing store with Yoco payments",
+  "version": "2.0.0",
+  "description": "fvck it. — Cape Town clothing store",
   "main": "server/server.js",
   "scripts": {
     "start": "node server/server.js",
