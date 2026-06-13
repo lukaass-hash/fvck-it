@@ -1,8 +1,11 @@
 {
   "name": "fvck-it-store",
   "version": "1.0.0",
-  "description": "fvck it. — minimal two-tone clothing store with Yoco payments",
+  "description": "fvck it. – minimal two-tone clothing store with Yoco payments",
   "main": "server/server.js",
+  "engines": {
+    "node": ">=18.0.0"
+  },
   "scripts": {
     "start": "node server/server.js",
     "dev": "node --watch server/server.js"
