@@ -220,11 +220,14 @@ app.get("/payment/failed", (req, res) => res.redirect("/?payment=failed"));
 app.use(express.static(path.resolve(__dirname, '../public')));
 // ---
 const PORT = process.env.PORT || 8080;
-app.listen(PORT, () => {
-  console.log(`fvck it. is live → http://localhost:${PORT}`);
+
+// ADD '0.0.0.0' RIGHT HERE:
+app.listen(PORT, '0.0.0.0', () => {
+  console.log(`fvck it. is live on port ${PORT}`);
+  
   const key = process.env.YOCO_SECRET_KEY || "";
-  if (!key) console.log("⚠ No YOCO_SECRET_KEY in .env — payments will fail until you add one.");
+  if (!key) console.log("⚠️ No YOCO_SECRET_KEY in .env – payments will fail until you add one.");
   else console.log(key.startsWith("sk_live_")
-    ? "● LIVE keys — real money will move."
-    : "○ TEST keys — no real money moves.");
+    ? "• LIVE keys – real money will move."
+    : "o TEST keys – no real money moves.");
 });
