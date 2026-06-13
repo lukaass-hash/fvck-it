@@ -1,8 +1,8 @@
 /* ════════════════════════════════════════════════════════════════
-   fvck it. — front-end (v3)
-   - tabs: Home / Catalogue (no admin)
-   - Cart persists across the Yoco redirect
-   - Yoco Checkout API: server creates the checkout, verifies on return
+   fvck it. — front-end (v4)
+   - Home / Catalogue tabs
+   - Cart with customer details form (email, phone, address)
+   - Yoco Checkout API redirect flow
    ════════════════════════════════════════════════════════════════ */
 
 let state = {
@@ -50,6 +50,7 @@ function route() {
 async function init() {
   wireUp();
   restoreCart();
+  restoreCustomer();
   try {
     state.products = await api("/api/products");
   } catch (e) {
@@ -184,6 +185,10 @@ function renderCart() {
   const n = state.cart.reduce((s, c) => s + c.qty, 0);
   $("cartCount").textContent = `(${n})`;
   $("cartTotal").textContent = fmt(cartTotal());
+
+  // Show/hide checkout form based on cart contents
+  $("checkoutForm").style.display = n > 0 ? "" : "none";
+
   $("cartItems").innerHTML = state.cart.length ? state.cart.map((c, i) => `
     <div class="cart-row">
       <div class="info"><strong>${c.name}</strong><span>Size ${c.size} · ${fmt(c.price)}</span></div>
@@ -212,9 +217,63 @@ function clearSavedCart() {
   try { localStorage.removeItem("fvckit:cart"); } catch (e) {}
 }
 
-/* ── CHECKOUT ───────────────────────────────────────────────── */
+/* ── CUSTOMER DETAILS: remember across sessions ─────────────── */
+function saveCustomer() {
+  try {
+    localStorage.setItem("fvckit:customer", JSON.stringify({
+      email: $("cfEmail").value.trim(),
+      phone: $("cfPhone").value.trim(),
+      address: $("cfAddress").value.trim()
+    }));
+  } catch (e) {}
+}
+function restoreCustomer() {
+  try {
+    const c = JSON.parse(localStorage.getItem("fvckit:customer"));
+    if (!c) return;
+    if (c.email)   $("cfEmail").value   = c.email;
+    if (c.phone)   $("cfPhone").value   = c.phone;
+    if (c.address) $("cfAddress").value = c.address;
+  } catch (e) {}
+}
+
+/* ── CHECKOUT VALIDATION + YOCO REDIRECT ────────────────────── */
+function validateCheckoutForm() {
+  const email   = $("cfEmail").value.trim();
+  const phone   = $("cfPhone").value.trim();
+  const address = $("cfAddress").value.trim();
+
+  [$("cfEmail"), $("cfPhone"), $("cfAddress")].forEach(el => el.classList.remove("field-error"));
+
+  const errors = [];
+  if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+    $("cfEmail").classList.add("field-error");
+    errors.push("email");
+  }
+  if (!phone || phone.replace(/\D/g, "").length < 9) {
+    $("cfPhone").classList.add("field-error");
+    errors.push("phone number");
+  }
+  if (!address || address.length < 10) {
+    $("cfAddress").classList.add("field-error");
+    errors.push("delivery address");
+  }
+
+  if (errors.length) {
+    toast("Please fill in your " + errors.join(", "));
+    return null;
+  }
+  return { email, phone, address };
+}
+
 async function checkout() {
   if (!state.cart.length) { toast("Your cart is empty"); return; }
+
+  const customer = validateCheckoutForm();
+  if (!customer) return;
+
+  saveCustomer();
+
   const btn = $("payBtn");
   btn.disabled = true;
   btn.textContent = "Opening secure checkout…";
@@ -222,7 +281,8 @@ async function checkout() {
     const out = await api("/api/pay", {
       method: "POST",
       body: JSON.stringify({
-        cart: state.cart.map(c => ({ id: c.id, size: c.size, qty: c.qty }))
+        cart: state.cart.map(c => ({ id: c.id, size: c.size, qty: c.qty })),
+        customer
       })
     });
     saveCart();

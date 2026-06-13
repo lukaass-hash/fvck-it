@@ -1,16 +1,9 @@
 /* ════════════════════════════════════════════════════════════════
-   fvck it. — server (v3)
+   fvck it. — server (v4)
    ----------------------------------------------------------------
-   No admin panel. Orders are posted to a Discord webhook.
-
-   Products live in /products.json at the repo root — edit that file
-   on GitHub to change the store. Railway redeploys automatically
-   in about 30 seconds.
-
-   The /data folder (on the Railway volume) is now used only for
-   pending.json — a short list of orders waiting to come back from
-   Yoco's payment page. Keeping it on the volume means deploys
-   don't break in-flight checkouts.
+   Same as v3 but the checkout now collects customer details
+   (email, phone, delivery address) and includes them in the
+   Discord order notification.
    ════════════════════════════════════════════════════════════════ */
 
 require("dotenv").config();
@@ -40,7 +33,7 @@ function normaliseBaseUrl(raw) {
 }
 const BASE_URL = normaliseBaseUrl(process.env.BASE_URL) || `http://localhost:${PORT}`;
 
-/* ── ensure /data exists for the volume ─────────────────────── */
+/* ── ensure /data exists ────────────────────────────────────── */
 if (!fs.existsSync(PENDING_DIR)) fs.mkdirSync(PENDING_DIR, { recursive: true });
 if (!fs.existsSync(PENDING_FILE)) fs.writeFileSync(PENDING_FILE, "{}");
 
@@ -60,7 +53,7 @@ app.get("/api/products", (req, res) => {
 
 /* ════════ STEP 1 — CREATE A YOCO CHECKOUT ════════ */
 app.post("/api/pay", async (req, res) => {
-  const { cart } = req.body;
+  const { cart, customer } = req.body;
   if (!Array.isArray(cart) || !cart.length) {
     return res.status(400).json({ error: "Your cart is empty" });
   }
@@ -120,7 +113,8 @@ app.post("/api/pay", async (req, res) => {
       checkoutId: checkout.id,
       items: lines.join(", "),
       total: totalCents / 100,
-      created: new Date().toISOString()
+      created: new Date().toISOString(),
+      customer: customer || {}
     };
     writeJSON(PENDING_FILE, pending);
 
@@ -137,8 +131,6 @@ app.get("/payment/success", async (req, res) => {
   const pending = readJSON(PENDING_FILE, {});
   const order = pending[orderId];
 
-  /* If the order is gone from pending, we already processed it —
-     the customer is just refreshing. Don't notify again. */
   if (!order) return res.redirect("/?payment=success");
 
   try {
@@ -149,11 +141,9 @@ app.get("/payment/success", async (req, res) => {
 
     if (yocoRes.ok && (checkout.status === "completed" || checkout.paymentId)) {
       const paymentRef = checkout.paymentId || order.checkoutId;
-      /* Remove from pending FIRST so a refresh can't double-notify */
       delete pending[orderId];
       writeJSON(PENDING_FILE, pending);
 
-      /* Fire-and-await Discord, but don't block the customer for long */
       await postToDiscord({ orderId, ...order, paymentRef })
         .catch(err => console.error("Discord post failed:", err));
 
@@ -172,21 +162,25 @@ app.get("/payment/failed",    (req, res) => res.redirect("/?payment=failed"));
 /* ════════ DISCORD WEBHOOK ════════ */
 async function postToDiscord(order) {
   if (!DISCORD_WEBHOOK) {
-    console.log("⚠ DISCORD_WEBHOOK_URL not set — order will not be notified");
-    console.log("  order recorded internally:", order);
+    console.log("⚠ DISCORD_WEBHOOK_URL not set — logging order to console:");
+    console.log(JSON.stringify(order, null, 2));
     return;
   }
   const fmt = n => "R" + Number(n).toLocaleString("en-ZA");
+  const c = order.customer || {};
   const payload = {
     username: "fvck it. — sales",
     embeds: [{
       title: "💸 New order",
       color: 0x252627,
       fields: [
-        { name: "Total",       value: fmt(order.total),      inline: true  },
-        { name: "Order ID",    value: order.orderId,         inline: true  },
-        { name: "Items",       value: order.items,           inline: false },
-        { name: "Payment ref", value: order.paymentRef,      inline: false }
+        { name: "Total",            value: fmt(order.total),      inline: true  },
+        { name: "Order ID",         value: order.orderId,         inline: true  },
+        { name: "Items",            value: order.items,           inline: false },
+        { name: "📧 Email",         value: c.email   || "—",     inline: true  },
+        { name: "📱 Phone",         value: c.phone   || "—",     inline: true  },
+        { name: "📍 Address",       value: c.address || "—",     inline: false },
+        { name: "Payment ref",      value: order.paymentRef,     inline: false }
       ],
       footer: { text: "fvck it. · Cape Town" },
       timestamp: new Date().toISOString()

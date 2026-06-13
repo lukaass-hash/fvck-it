@@ -78,6 +78,21 @@
   </div>
   <div class="cart-items" id="cartItems"></div>
   <div class="drawer-foot">
+    <div class="checkout-form" id="checkoutForm">
+      <p class="cf-title">Delivery details</p>
+      <div class="cf-field">
+        <label class="label" for="cfEmail">Email</label>
+        <input id="cfEmail" type="email" placeholder="you@example.com" autocomplete="email">
+      </div>
+      <div class="cf-field">
+        <label class="label" for="cfPhone">Phone</label>
+        <input id="cfPhone" type="tel" placeholder="072 123 4567" autocomplete="tel">
+      </div>
+      <div class="cf-field">
+        <label class="label" for="cfAddress">Delivery address</label>
+        <textarea id="cfAddress" rows="2" placeholder="Street, city, postal code" autocomplete="street-address"></textarea>
+      </div>
+    </div>
     <div class="total-row"><span>Total</span><span id="cartTotal">R0</span></div>
     <button class="pay-btn" id="payBtn">Pay with Yoco</button>
     <p class="pay-note">Secure card payment · ZAR · powered by Yoco</p>

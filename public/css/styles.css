@@ -349,3 +349,34 @@ footer {
 }
 footer .wordmark { font-size: 18px; }
 footer p { font-size: 11px; letter-spacing: 0.18em; color: var(--muted); }
+
+/* ── CHECKOUT FORM ──────────────────────────────────────────── */
+.checkout-form {
+  display: flex; flex-direction: column; gap: 14px;
+  margin-bottom: 20px; padding-bottom: 20px;
+  border-bottom: 1px solid var(--line);
+}
+.cf-title {
+  font-size: 12px; letter-spacing: 0.16em; text-transform: uppercase;
+  font-weight: 600; margin-bottom: 2px;
+}
+.cf-field label { display: block; margin-bottom: 5px; }
+.cf-field input,
+.cf-field textarea {
+  width: 100%;
+  background: transparent;
+  border: 1px solid var(--line-2);
+  color: var(--carbon);
+  padding: 10px 12px;
+  font-size: 14px;
+  font-family: inherit;
+  resize: vertical;
+}
+.cf-field input:focus,
+.cf-field textarea:focus {
+  outline: none;
+  border-color: var(--carbon);
+}
+.cf-field .field-error {
+  border-color: #c0392b;
+}
