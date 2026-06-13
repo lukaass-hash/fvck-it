@@ -1,0 +1,18 @@
+[
+  {
+    "id": "p_seed_tee",
+    "name": "essential tee",
+    "price": 449,
+    "sizes": ["S", "M", "L", "XL"],
+    "img": "",
+    "desc": "260gsm heavyweight cotton. Boxy cut, tight collar."
+  },
+  {
+    "id": "p_seed_hoodie",
+    "name": "oversized hoodie",
+    "price": 899,
+    "sizes": ["S", "M", "L", "XL", "XXL"],
+    "img": "",
+    "desc": "450gsm brushed fleece. Dropped shoulders, double-lined hood."
+  }
+]

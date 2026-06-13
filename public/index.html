@@ -13,7 +13,6 @@
   <nav>
     <button class="nav-link" data-route="home">Home</button>
     <button class="nav-link" data-route="catalogue">Catalogue</button>
-    <button class="nav-link" data-route="admin">Admin</button>
     <button class="nav-link cart-btn" id="cartBtn">
       Cart<span class="cart-count" id="cartCount">(0)</span>
     </button>
@@ -67,48 +66,6 @@
       <span class="count label" id="catalogueCount"></span>
     </div>
     <div class="grid" id="catalogueGrid"></div>
-  </section>
-</main>
-
-<!-- ═════════════════════════ ADMIN ═════════════════════════ -->
-<main data-page="admin">
-  <section class="admin">
-    <h2>Back office.</h2>
-    <p class="sub">Add pieces to the store, keep an eye on what's selling. Changes save automatically.</p>
-
-    <div class="stat-row">
-      <div class="stat"><span class="label">Total sales</span><strong id="statCount">0</strong></div>
-      <div class="stat"><span class="label">Revenue</span><strong id="statRev">R0</strong></div>
-      <div class="stat"><span class="label">Items in store</span><strong id="statItems">0</strong></div>
-    </div>
-
-    <div class="panel">
-      <h3>Add a new piece</h3>
-      <div class="form-grid">
-        <div class="field"><label class="label" for="pName">Name</label><input id="pName" placeholder="oversized hoodie"></div>
-        <div class="field"><label class="label" for="pPrice">Price (ZAR)</label><input id="pPrice" type="number" min="1" placeholder="899"></div>
-        <div class="field"><label class="label" for="pSizes">Sizes (comma separated)</label><input id="pSizes" value="S, M, L, XL"></div>
-        <div class="field"><label class="label" for="pImg">Image URL (optional)</label><input id="pImg" placeholder="https://…/photo.jpg"></div>
-        <div class="field full"><label class="label" for="pDesc">Short description</label><input id="pDesc" placeholder="450gsm brushed fleece, dropped shoulder"></div>
-        <div class="full"><button class="btn-dark" id="addProductBtn">Add to store</button></div>
-      </div>
-    </div>
-
-    <div class="panel">
-      <h3>Store inventory</h3>
-      <table>
-        <thead><tr><th>Piece</th><th>Price</th><th>Sizes</th><th></th></tr></thead>
-        <tbody id="invBody"></tbody>
-      </table>
-    </div>
-
-    <div class="panel">
-      <h3>Sales</h3>
-      <table>
-        <thead><tr><th>Date</th><th>Items</th><th>Total</th><th>Payment ref</th></tr></thead>
-        <tbody id="salesBody"></tbody>
-      </table>
-    </div>
   </section>
 </main>
 

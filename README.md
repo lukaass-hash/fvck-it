@@ -1,77 +1,140 @@
-# fvck it. — Cape Town clothing store (v2)
+# fvck it. — Cape Town clothing store (v3)
 
-A Node.js + Express store with two designs (Home / Catalogue), an admin
-back office, and Yoco card payments via the official **Checkout API**.
+A Node.js + Express store. Two tabs: **Home** and **Catalogue**.
+Payments via Yoco's Checkout API. **Orders are posted to Discord.**
+No admin panel — products live in `products.json` in this repo.
 
-## What changed in v2
-
-- **Auto-seed.** On boot, if the data folder is empty (e.g. a freshly
-  mounted Railway volume), the server writes a starter `products.json`
-  so the store never appears empty.
-- **BASE_URL normalisation.** The server now accepts `BASE_URL` with
-  or without `https://`. This was the bug breaking Yoco — a value like
-  `www.yourdomain.co.za` got passed to Yoco as-is, producing invalid
-  redirect URLs.
-- **Port 8080** is the default.
-- **Redesign.** Snow-on-carbon editorial layout, Home page with a
-  "Latest in" section, separate Catalogue tab, story section, Cape
-  Town tone throughout. No more "two tones / B&W" messaging.
-- **Sort & "New" badges.** Newly added pieces sort to the top of Home
-  and wear a small "New" badge for 14 days.
+---
 
 ## Folder
 
 ```
 fvck-it/
+├── products.json           ★ edit this to add / change products
+├── server/server.js
 ├── public/
-│   ├── index.html          single-page UI with tab routing
+│   ├── index.html
 │   ├── css/styles.css
 │   └── js/app.js
-├── server/server.js
-├── data/                   auto-seeded on first boot
+├── data/                   pending orders (kept on Railway volume)
 ├── package.json
 ├── .env.example
 ├── .gitignore
 └── README.md
 ```
 
+---
+
+## Day-to-day: adding or editing products
+
+1. On GitHub, open `products.json`, click the pencil icon.
+2. Add a new object to the list, e.g.
+
+   ```json
+   {
+     "id": "p_cap_001",
+     "name": "lowkey cap",
+     "price": 349,
+     "sizes": ["OS"],
+     "img": "https://your-image-host.com/cap.jpg",
+     "desc": "6-panel washed cotton. Adjustable strap.",
+     "addedAt": "2026-07-01T12:00:00Z"
+   }
+   ```
+
+3. **Important fields:**
+   - `id` — anything unique, no spaces (e.g. `p_cap_001`)
+   - `addedAt` — ISO date string. Pieces with a recent `addedAt`
+     sort to the top of the **Latest in** section and wear a "New"
+     badge for 14 days.
+
+4. Commit the change. Railway redeploys in ~30 seconds. The new
+   product is live.
+
+To remove a product, just delete its block from the list and commit.
+
+---
+
+## How an order is processed
+
+1. Customer clicks **Pay with Yoco** → server creates a Yoco checkout.
+2. Customer pays on Yoco's hosted page (your site never sees their card).
+3. Yoco sends them back. Server **verifies with Yoco's API** that the
+   payment really completed.
+4. Server posts the order details to your **Discord webhook**:
+   - Total
+   - Order ID
+   - Items + sizes + quantities
+   - Yoco payment reference
+5. Customer sees "Payment received — order placed ✓".
+
+Refreshing the success URL **does not** post a duplicate to Discord —
+the order is removed from the pending list before notifying.
+
+---
+
+## Railway setup
+
+In your service's **Variables** tab:
+
+| Variable              | Value                                                       |
+|-----------------------|-------------------------------------------------------------|
+| `YOCO_SECRET_KEY`     | `sk_test_…` while testing, `sk_live_…` when live           |
+| `DISCORD_WEBHOOK_URL` | The webhook URL from your Discord channel                  |
+| `BASE_URL`            | Your domain (e.g. `www.seriouslybro.wtf`, no https needed) |
+
+Don't set `PORT` — Railway provides it.
+
+**Volume:** keep your existing volume mounted at `/app/data`. It now
+only holds `pending.json` (a few short-lived records during checkout),
+but keeping it on a volume means deploys don't break in-flight payments.
+
+Startup log will print:
+```
+fvck it. is live on port 8080
+  BASE_URL = https://www.seriouslybro.wtf
+  YOCO_KEY = ○ TEST — no real money moves
+  DISCORD  = ✓ configured
+```
+
+---
+
+## Setting up the Discord webhook
+
+1. In Discord, open the channel you want orders posted to.
+2. Channel name → **Edit Channel → Integrations → Webhooks → New Webhook**.
+3. Name it (e.g. "fvck it. orders"), pick an icon, click **Copy Webhook URL**.
+4. Paste into Railway as `DISCORD_WEBHOOK_URL`.
+
+The URL is a secret — anyone who has it can post in that channel.
+If it ever leaks, delete the webhook in Discord and create a new one;
+your code doesn't change, only the env var.
+
+---
+
 ## Local development
 
 ```
 npm install
-cp .env.example .env        # then put your real values in .env
+cp .env.example .env       # fill in your values
 npm start
 ```
 Open http://localhost:8080.
 
-## Railway (production)
+---
 
-Push this repo to GitHub, then in Railway:
+## Going live with real money
 
-- **Variables tab** — set:
-  - `YOCO_SECRET_KEY` — your `sk_test_…` or `sk_live_…` key
-  - `ADMIN_PIN` — your admin PIN
-  - `BASE_URL` — your public address. With or without `https://`
-    (the server adds it). e.g. `www.seriouslybro.wtf`
-    Don't set `PORT` — Railway provides it.
-- **Volume** — mount it at `/app/data` so products and sales survive
-  redeploys. (The server auto-creates the files inside it.)
+1. Set `YOCO_SECRET_KEY` in Railway to your `sk_live_…` value.
+2. Buy something cheap with your own card to confirm.
+3. The startup log will show `● LIVE — real money moves`.
 
-Going live: change `YOCO_SECRET_KEY` from your `sk_test_…` value to
-your `sk_live_…` value and redeploy. The startup log prints either
-`○ TEST — no real money moves` or `● LIVE — real money moves` so
-you always know which mode you're in.
-
-## Yoco test cards
-
-While `YOCO_SECRET_KEY` starts with `sk_test_`, payments run end-to-end
-but no real money moves. Use the test card numbers from your Yoco
-portal under **Sales → Payment Gateway → Test card details**. Any
-future expiry date and any CVV work.
+---
 
 ## Security checklist before real customers
 
-- [ ] Regenerate your live Yoco keys in the portal and update Railway.
-- [ ] Change `ADMIN_PIN` from the default.
+- [ ] **Regenerate the Discord webhook** in Discord (the old one was
+      shared in chat — anyone who saw it can post to your channel).
+- [ ] **Regenerate the Yoco live keys** in the Yoco portal too.
 - [ ] Site is served over `https`.
-- [ ] Buy something cheap with a real card to confirm the live flow.
+- [ ] Test a real payment end-to-end before announcing the store.
