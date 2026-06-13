@@ -215,6 +215,12 @@ app.get("/payment/cancelled", (req, res) => res.redirect("/?payment=cancelled"))
 app.get("/payment/failed", (req, res) => res.redirect("/?payment=failed"));
 
 /* ── go ── */
+
+// ---
+app.get("*", (req, res) => {
+  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
+});
+// ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`fvck it. is live → http://localhost:${PORT}`);
