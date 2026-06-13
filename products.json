@@ -19,7 +19,7 @@
     "id" : "p_parachute,loose_fit_pants",
     "name" : "parachute loose fit pants",
     "price" : 699,
-    "sizes" : [],
+    "sizes" : ["S","M","L","XL"],
     "img" : "https://cdn.discordapp.com/attachments/1515470637890801694/1515473672482193428/hp38d5x.jpg?ex=6a2f2257&is=6a2dd0d7&hm=9f33a217a3b46be03298739e587135960000a0874419cb8543ca93ec9dfa3258&",
     "desc" : "comfy as fvck. parachute fit pants with style"
   }
