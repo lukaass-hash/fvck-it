@@ -217,9 +217,7 @@ app.get("/payment/failed", (req, res) => res.redirect("/?payment=failed"));
 /* ── go ── */
 
 // ---
-app.get("*", (req, res) => {
-  res.sendFile(path.join(__dirname, "..", "public", "index.html"));
-});
+app.use(express.static(path.resolve(__dirname, '../public')));
 // ---
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
