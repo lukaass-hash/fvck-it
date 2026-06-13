@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fvck it.</title>
+<link rel="stylesheet" href="css/noir.css">
+
+</head>
+<body>
+
+<header>
+  <a class="wordmark" href="#" id="logoHome">fvck <em>it.</em></a>
+  <nav>
+    <button class="nav-link active" id="navShop">Shop</button>
+    <button class="nav-link" id="navAdmin">Admin</button>
+    <button class="nav-link cart-btn" id="navCart">Cart<span class="cart-count" id="cartCount">0</span></button>
+  </nav>
+</header>
+
+<div id="storefront">
+  <section class="hero">
+    <div class="stack">
+      <div class="hollow">fvck</div>
+      <div class="hollow">fvck</div>
+      <div class="solid">fvck it.</div>
+    </div>
+    <div class="hero-meta">
+      <p>Heavyweight basics in carbon black and snow. No prints you'll regret, no colours you'll outgrow. Two tones, zero noise.</p>
+      <div class="coords label">33.9249° S — 18.4241° E<br>CPT · DROP 001 · 2026</div>
+    </div>
+    <span class="rail">two tones — zero noise</span>
+  </section>
+
+  <section class="shop">
+    <div class="shop-head">
+      <h2>Drop 001</h2>
+      <span class="label" id="itemTally"></span>
+    </div>
+    <div class="grid" id="productGrid"></div>
+  </section>
+</div>
+
+<div class="admin" id="adminView">
+  <h2>back office</h2>
+  <p class="sub">add pieces / track sales — saved automatically</p>
+  <div class="stat-row">
+    <div class="stat"><span class="label">Total sales</span><strong id="statCount">0</strong></div>
+    <div class="stat"><span class="label">Revenue</span><strong id="statRev">R0</strong></div>
+    <div class="stat"><span class="label">Items in store</span><strong id="statItems">0</strong></div>
+  </div>
+  <div class="panel">
+    <h3>Add a new piece</h3>
+    <div class="form-grid">
+      <div class="field"><label class="label" for="pName">Name</label><input id="pName" placeholder="oversized hoodie"></div>
+      <div class="field"><label class="label" for="pPrice">Price (ZAR)</label><input id="pPrice" type="number" min="1" placeholder="899"></div>
+      <div class="field"><label class="label" for="pSizes">Sizes (comma separated)</label><input id="pSizes" value="S, M, L, XL"></div>
+      <div class="field"><label class="label" for="pImg">Image URL (optional)</label><input id="pImg" placeholder="https://…/photo.jpg"></div>
+      <div class="field full"><label class="label" for="pDesc">Short description</label><input id="pDesc" placeholder="450gsm brushed fleece, dropped shoulder"></div>
+      <div class="full"><button class="btn-dark" id="addProductBtn">Add to store</button></div>
+    </div>
+  </div>
+  <div class="panel">
+    <h3>Store inventory</h3>
+    <table>
+      <thead><tr><th>Piece</th><th>Price</th><th>Sizes</th><th></th></tr></thead>
+      <tbody id="invBody"></tbody>
+    </table>
+  </div>
+  <div class="panel">
+    <h3>Sales</h3>
+    <table>
+      <thead><tr><th>Date</th><th>Items</th><th>Total</th><th>Payment ref</th></tr></thead>
+      <tbody id="salesBody"></tbody>
+    </table>
+  </div>
+</div>
+
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="drawer-head">
+    <h3>Your cart</h3>
+    <button class="x-btn" id="closeCartBtn" aria-label="Close cart">×</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="drawer-foot">
+    <div class="total-row"><span>TOTAL</span><span id="cartTotal">R0</span></div>
+    <button class="pay-btn" id="payBtn">Pay with Yoco</button>
+    <p class="pay-note">SECURE CARD PAYMENT · ZAR · POWERED BY YOCO</p>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <span class="wordmark">fvck <em>it.</em></span>
+  <p>TWO TONES · ZERO NOISE · CPT</p>
+</footer>
+
+<script src="js/app-noir.js"></script>
+</body>
+</html>

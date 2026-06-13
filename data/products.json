@@ -1,0 +1,29 @@
+[
+  {
+    "id": "p1",
+    "name": "carbon box tee",
+    "price": 449,
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "img": "",
+    "desc": "260gsm heavyweight cotton in carbon black. Boxy cut, tight collar."
+  },
+  {
+    "id": "p2",
+    "name": "snow oversized hoodie",
+    "price": 899,
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL",
+      "XXL"
+    ],
+    "img": "",
+    "desc": "450gsm brushed fleece in snow. Dropped shoulders, double-lined hood."
+  }
+]
