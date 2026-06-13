@@ -219,7 +219,7 @@ app.get("/payment/failed", (req, res) => res.redirect("/?payment=failed"));
 // ---
 app.use(express.static(path.resolve(__dirname, '../public')));
 // ---
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 8080;
 app.listen(PORT, () => {
   console.log(`fvck it. is live → http://localhost:${PORT}`);
   const key = process.env.YOCO_SECRET_KEY || "";
