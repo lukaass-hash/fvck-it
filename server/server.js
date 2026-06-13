@@ -30,6 +30,13 @@ const PRODUCTS_FILE = path.join(DATA, "products.json");
 const SALES_FILE = path.join(DATA, "sales.json");
 const PENDING_FILE = path.join(DATA, "pending.json");
 
+if (!fs.existsSync(DATA)) {
+  fs.mkdirSync(DATA, { recursive: true });
+}
+if (!fs.existsSync(PRODUCTS_FILE)) fs.writeFileSync(PRODUCTS_FILE, "[]");
+if (!fs.existsSync(SALES_FILE)) fs.writeFileSync(SALES_FILE, "[]");
+if (!fs.existsSync(PENDING_FILE)) fs.writeFileSync(PENDING_FILE, "{}");
+
 const YOCO_API = "https://payments.yoco.com/api/checkouts";
 const BASE_URL = process.env.BASE_URL || `http://localhost:${process.env.PORT || 3000}`;
 
