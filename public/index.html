@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fvck it. — Cape Town</title>
+<link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+<header>
+  <a class="wordmark" href="#home" data-route="home">fvck it<span class="dot">.</span></a>
+  <nav>
+    <button class="nav-link" data-route="home">Home</button>
+    <button class="nav-link" data-route="catalogue">Catalogue</button>
+    <button class="nav-link" data-route="admin">Admin</button>
+    <button class="nav-link cart-btn" id="cartBtn">
+      Cart<span class="cart-count" id="cartCount">(0)</span>
+    </button>
+  </nav>
+</header>
+
+<!-- ═════════════════════════ HOME ═════════════════════════ -->
+<main data-page="home">
+  <section class="hero">
+    <div class="hero-inner">
+      <div class="hero-tag">
+        <span class="label">Cape Town · Est. 2026</span>
+        <span class="label">33.9249° S — 18.4241° E</span>
+      </div>
+      <h1>fvck it<span class="dot">.</span></h1>
+      <div class="hero-body">
+        <p>Clothing made for people who got dressed and walked out the door anyway. Designed in Cape Town. Drops without warning.</p>
+        <div class="hero-cta">
+          <a href="#catalogue" class="cta-link" data-route="catalogue">Shop the catalogue <span class="arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="section-head">
+      <h2>Latest in.</h2>
+      <span class="count label" id="latestCount"></span>
+    </div>
+    <div class="grid" id="latestGrid"></div>
+  </section>
+
+  <div class="see-all-strip">
+    <a href="#catalogue" class="see-all" data-route="catalogue">View the full catalogue <span>→</span></a>
+  </div>
+
+  <section class="story">
+    <div class="story-inner">
+      <h3>Wear what you'd wear at three in the morning when nobody is watching.</h3>
+      <p>Pieces drawn from Cape Town — the slowness, the wind, the shrug. Made for everyday in fabrics that hold up to it.</p>
+      <p class="city">Cape Town — South Africa</p>
+    </div>
+  </section>
+</main>
+
+<!-- ═════════════════════════ CATALOGUE ═════════════════════════ -->
+<main data-page="catalogue">
+  <section class="section">
+    <div class="section-head">
+      <h2>The catalogue.</h2>
+      <span class="count label" id="catalogueCount"></span>
+    </div>
+    <div class="grid" id="catalogueGrid"></div>
+  </section>
+</main>
+
+<!-- ═════════════════════════ ADMIN ═════════════════════════ -->
+<main data-page="admin">
+  <section class="admin">
+    <h2>Back office.</h2>
+    <p class="sub">Add pieces to the store, keep an eye on what's selling. Changes save automatically.</p>
+
+    <div class="stat-row">
+      <div class="stat"><span class="label">Total sales</span><strong id="statCount">0</strong></div>
+      <div class="stat"><span class="label">Revenue</span><strong id="statRev">R0</strong></div>
+      <div class="stat"><span class="label">Items in store</span><strong id="statItems">0</strong></div>
+    </div>
+
+    <div class="panel">
+      <h3>Add a new piece</h3>
+      <div class="form-grid">
+        <div class="field"><label class="label" for="pName">Name</label><input id="pName" placeholder="oversized hoodie"></div>
+        <div class="field"><label class="label" for="pPrice">Price (ZAR)</label><input id="pPrice" type="number" min="1" placeholder="899"></div>
+        <div class="field"><label class="label" for="pSizes">Sizes (comma separated)</label><input id="pSizes" value="S, M, L, XL"></div>
+        <div class="field"><label class="label" for="pImg">Image URL (optional)</label><input id="pImg" placeholder="https://…/photo.jpg"></div>
+        <div class="field full"><label class="label" for="pDesc">Short description</label><input id="pDesc" placeholder="450gsm brushed fleece, dropped shoulder"></div>
+        <div class="full"><button class="btn-dark" id="addProductBtn">Add to store</button></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <h3>Store inventory</h3>
+      <table>
+        <thead><tr><th>Piece</th><th>Price</th><th>Sizes</th><th></th></tr></thead>
+        <tbody id="invBody"></tbody>
+      </table>
+    </div>
+
+    <div class="panel">
+      <h3>Sales</h3>
+      <table>
+        <thead><tr><th>Date</th><th>Items</th><th>Total</th><th>Payment ref</th></tr></thead>
+        <tbody id="salesBody"></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+
+<!-- ═════════════════════════ CART DRAWER ═════════════════════════ -->
+<div class="overlay" id="overlay"></div>
+<aside class="drawer" id="drawer" aria-label="Shopping cart">
+  <div class="drawer-head">
+    <h3>Your cart</h3>
+    <button class="x-btn" id="closeCartBtn" aria-label="Close cart">×</button>
+  </div>
+  <div class="cart-items" id="cartItems"></div>
+  <div class="drawer-foot">
+    <div class="total-row"><span>Total</span><span id="cartTotal">R0</span></div>
+    <button class="pay-btn" id="payBtn">Pay with Yoco</button>
+    <p class="pay-note">Secure card payment · ZAR · powered by Yoco</p>
+  </div>
+</aside>
+
+<div class="toast" id="toast"></div>
+
+<footer>
+  <span class="wordmark">fvck it<span class="dot">.</span></span>
+  <p>CAPE TOWN — SOUTH AFRICA</p>
+</footer>
+
+<script src="js/app.js"></script>
+</body>
+</html>
