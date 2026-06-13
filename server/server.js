@@ -21,8 +21,9 @@ const path = require("path");
 const crypto = require("crypto");
 
 const app = express();
-app.use(express.json());
 app.use(express.static(path.join(__dirname, "..", "public")));
+// and
+app.use(express.static(path.resolve(__dirname, '../public')));
 
 const DATA = path.join(__dirname, "..", "data");
 const PRODUCTS_FILE = path.join(DATA, "products.json");
